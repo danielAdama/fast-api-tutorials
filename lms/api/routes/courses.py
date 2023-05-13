@@ -1,19 +1,34 @@
-import fastapi
+from fastapi import APIRouter, HTTPException,  status, Depends, Request, Path
+from sqlalchemy.orm import Session
 from typing import List, Optional, Dict
+from sqlalchemy.orm import Session
+from api.architecture.courses import get_course, get_courses, create_course
+from db.setup import get_db
+from pydantic_schema.course import Course, CourseCreate
 
-router = fastapi.APIRouter()
+router = APIRouter()
 
-@router.get("/courses")
-async def read_courses() -> Dict:
-    return {
-        "courses":[]
-    }
+@router.get("/courses", response_model=List[Course])
+async def read_courses(
+    db: Session = Depends(get_db)
+    ):
 
-@router.post("/courses")
-async def create_course() -> Dict:
-    return {
-        "courses":[]
-    }
+    courses = get_courses(db)
+    return courses
+
+@router.post("/courses", response_model=Course)
+async def create_new_course(
+    course: CourseCreate, 
+    db: Session = Depends(get_db)
+    ):
+
+    # user = get_user_by_email(user.email, db)
+    # if user:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_400_BAD_REQUEST,
+    #         detail="User already exist"
+    #     )
+    return create_course(course, db)
 
 @router.get("/courses/{id}")
 async def read_course() -> Dict:

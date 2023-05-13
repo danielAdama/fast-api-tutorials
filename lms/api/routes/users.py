@@ -1,30 +1,47 @@
-import fastapi
-from fastapi import Path, Query
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException,  status, Depends, Request, Path
+from sqlalchemy.orm import Session
+from api.architecture.users import get_user, get_user_by_email, get_users, create_user
 from typing import List, Optional, Dict
+from pydantic_schema.users import UserCreate, User
+from db.setup import get_db
 
-router = fastapi.APIRouter()
-
-users = []
-
-class User(BaseModel):
-    email: str
-    is_active: bool
-    bio: Optional[str]
-
+router = APIRouter()
 
 @router.get("/users", response_model=List[User])
-async def get_users():
+async def read_users(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+    ):
+
+    users = get_users(db, skip=skip, limit=limit)
     return users
 
-@router.post("/users")
-async def create_user(user: User) -> Dict:
-    users.append(user)
-    return {"message": "Success"}
-
-@router.get("/users/{id}")
-async def get_user(id: int = Path(
-    ..., description = "The ID of the user you want to retrieve."),
-    is_active: bool = Query(None)
+@router.post("/users", response_model=User, status_code=status.HTTP_201_CREATED)
+async def create_new_user(
+    user: UserCreate, 
+    db: Session = Depends(get_db)
     ):
-    return users[id]
+
+    user = get_user_by_email(user.email, db)
+    if user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User already exist"
+        )
+    return create_user(user, db)
+
+@router.get("/users/{user_id}", response_model=User)
+async def read_user(user_id: int = Path(
+    ..., description = "The ID of the user you want to retrieve."),
+    db: Session = Depends(get_db)
+    ):
+
+    user = get_user(user_id, db)
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User do not exist"
+        )
+    
+    return user

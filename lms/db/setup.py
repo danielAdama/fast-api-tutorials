@@ -10,7 +10,6 @@ CONNECTION_ARGS = {
 
 engine = create_engine(
     CONNECTION_STRING,
-    CONNECTION_ARGS,
     future=True
 )
 
@@ -24,7 +23,7 @@ SessionLocal = sessionmaker(
 Base = declarative_base()
 
 def get_db():
-    db=SessionLocal(),
+    db = SessionLocal()
     try:
         yield db
     finally:

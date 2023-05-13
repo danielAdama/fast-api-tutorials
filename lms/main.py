@@ -1,5 +1,10 @@
+from db.setup import engine
+from api.models import course, user
 from fastapi import FastAPI
 from api.routes import users, courses, sections
+
+user.Base.metadata.create_all(bind=engine)
+course.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="API LMS",
