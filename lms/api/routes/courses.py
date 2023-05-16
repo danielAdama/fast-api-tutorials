@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException,  status, Depends, Request, Path
 from sqlalchemy.orm import Session
 from typing import List, Optional, Dict
 from sqlalchemy.orm import Session
-from api.architecture.courses import get_course, get_courses, create_course
+from api.repository.courses import get_course, get_courses, create_course
 from db.setup import get_db
 from pydantic_schema.course import Course, CourseCreate
 

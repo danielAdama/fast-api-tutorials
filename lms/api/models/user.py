@@ -12,12 +12,16 @@ class User(BaseEntity, Base):
     __tablename__ = "users"
 
     email = Column(String(100), unique=True, index=True, nullable=False)
-    role = Column(Enum(Role))
-    is_active = Column(Boolean, default=False)
+    first_name = Column(String(100), nullable=False)
+    last_name = Column(String(100), nullable=False)
+    password = Column(String(100), nullable=False)
+    admin = Column(Boolean, default=False)
+    verified = Column(Boolean, default=False)
+    role = Column(Enum(Role), default=Role.student, nullable=True)
+    # is_active = Column(Boolean, default=False)
     profile = relationship("Profile", back_populates="owner", uselist=False)
     student_courses = relationship("StudentCourse", back_populates="student")
     student_content_blocks = relationship("CompletedContentBlock", back_populates="student")
-
 
 class Profile(BaseEntity, Base):
     __tablename__="profiles"
@@ -28,3 +32,13 @@ class Profile(BaseEntity, Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     ## Relationship of each user to a profile
     owner = relationship("User", back_populates="profile")
+
+class EmailActivateToken(BaseEntity, Base):
+    __tablename__="tokens"
+
+    token_hash = Column(String(80), nullable=False)
+
+class PasswordResetToken(BaseEntity, Base):
+    __tablename__="reset_tokens"
+
+    token_hash = Column(String(80), nullable=False)

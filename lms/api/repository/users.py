@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from api.models.user import User
-from pydantic_schema.users import UserCreate
+# from api.models.user import User
+from pydantic_schema.users import UserCreate, User
 
 def get_user(user_id: int, db: Session):
     return db.query(User).filter(User.id == user_id).first()

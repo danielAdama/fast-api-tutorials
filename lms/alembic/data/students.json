@@ -1,8 +1,8 @@
 [
     {
         "email": "bosco@example.com",
-        "first_name":"",
-        "last_name":"",
+        "first_name":"Emma",
+        "last_name":"Anthony",
         "password": "testing123",
         "admin":false,
         "verified":false,
@@ -12,8 +12,8 @@
     },
     {
         "email": "fish@example.com",
-        "first_name":"",
-        "last_name":"",
+        "first_name":"Francisco",
+        "last_name":"Abraham",
         "password": "testing123",
         "admin":false,
         "verified":false,

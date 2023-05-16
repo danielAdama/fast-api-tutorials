@@ -41,7 +41,7 @@ class ContentBlock(BaseEntity, Base):
 
     title = Column(String(256), nullable=False)
     description = Column(Text, nullable=True)
-    type = Column(Enum(ContentType))
+    type = Column(Enum(ContentType), default=ContentType.lesson, nullable=False)
     url =  Column(URLType, nullable=True)
     content = Column(Text, nullable=True)
     section_id = Column(Integer, ForeignKey("sections.id"), nullable=False)
